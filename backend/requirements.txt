@@ -1,0 +1,17 @@
+# Core ML
+tensorflow          # ANN (Keras API)
+scikit-learn        # Linear Regression, Random Forest, metrics, scalers
+pandas              # data handling
+numpy               # numerics
+joblib              # persist scalers / baseline models
+
+# Data acquisition (real historical stock data, no auth required)
+# Yahoo Finance public chart endpoint is used directly via urllib in download_data.py.
+
+# Visualization (static evaluation plots for the written assignment)
+matplotlib
+
+# Backend API
+fastapi
+uvicorn[standard]
+pydantic

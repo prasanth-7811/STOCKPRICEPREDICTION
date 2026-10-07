@@ -1,0 +1,32 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model weights (large binary)
+*.keras
+*.h5
+
+# Outputs (regenerated on run)
+stock-price-ann/outputs/figures/
+stock-price-ann/outputs/metrics.csv
+
+# Uploaded/temp data
+stock-price-ann/data/_uploaded.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
