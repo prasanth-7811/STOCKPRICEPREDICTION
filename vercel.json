@@ -3,7 +3,14 @@
   "builds": [
     {
       "src": "stock-price-ann/api/index.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "stock-price-ann/src/**",
+          "stock-price-ann/data/**",
+          "stock-price-ann/requirements.txt"
+        ]
+      }
     }
   ],
   "routes": [
