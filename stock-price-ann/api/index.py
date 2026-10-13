@@ -7,7 +7,7 @@ import os, sys
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
@@ -41,6 +41,12 @@ class TrainRequest(BaseModel):
 
 class PredictRequest(BaseModel):
     features: dict
+
+
+# ── Favicon ───────────────────────────────────────────────────────────────────
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return Response(status_code=204)
 
 
 # ── Root ──────────────────────────────────────────────────────────────────────

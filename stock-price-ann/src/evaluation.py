@@ -1,19 +1,38 @@
 """
 evaluation.py  —  Metrics + 12 rich visualizations.
 """
+from __future__ import annotations
 
 import os
+import functools
 import numpy as np
 import pandas as pd
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-import seaborn as sns
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+try:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.gridspec as gridspec
+    import seaborn as sns
+    sns.set_theme(style="darkgrid", palette="muted")
+    HAS_MATPLOTLIB = True
+except (ImportError, ModuleNotFoundError):
+    HAS_MATPLOTLIB = False
+    plt = None
+    gridspec = None
+    sns = None
+
 FIG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "outputs", "figures")
-sns.set_theme(style="darkgrid", palette="muted")
+
+
+def _require_plotting():
+    if not HAS_MATPLOTLIB:
+        raise ImportError(
+            "matplotlib and seaborn are required for visualization functions. "
+            "Please install them via `pip install matplotlib seaborn`."
+        )
+
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
