@@ -1,23 +1,6 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "stock-price-ann/api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": [
-          "stock-price-ann/api/requirements.txt",
-          "stock-price-ann/api/index.html",
-          "stock-price-ann/src/**",
-          "stock-price-ann/data/**"
-        ]
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "stock-price-ann/api/index.py"
-    }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
   ]
 }
