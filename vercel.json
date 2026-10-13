@@ -7,6 +7,7 @@
       "config": {
         "includeFiles": [
           "stock-price-ann/api/requirements.txt",
+          "stock-price-ann/api/index.html",
           "stock-price-ann/src/**",
           "stock-price-ann/data/**"
         ]
