@@ -21,6 +21,9 @@ from ann_numpy      import NumpyANN
 
 app = FastAPI(title="Stock Price Prediction API", version="1.0.0")
 
+from mangum import Mangum
+handler = Mangum(app)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -53,35 +56,184 @@ def favicon():
 @app.get("/", response_class=HTMLResponse)
 def root():
     return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Stock Price Prediction API</title>
-      <style>
-        body { font-family: Arial, sans-serif; background: #1a1a2e; color: #cdd6f4;
-               display: flex; justify-content: center; align-items: center;
-               height: 100vh; margin: 0; }
-        .card { background: #16213e; border-radius: 16px; padding: 2.5rem 3rem;
-                max-width: 520px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-        h1  { color: #e94560; margin-top: 0; }
-        a   { color: #e94560; }
-        .ep { background: #0f3460; border-radius: 8px; padding: 0.4rem 0.8rem;
-              margin: 0.3rem 0; display: block; font-family: monospace; font-size: 0.9rem; }
-      </style>
-    </head>
-    <body>
-      <div class="card">
-        <h1>📈 Stock Price Prediction API</h1>
-        <p>FastAPI · Numpy ANN · Linear Regression · Random Forest</p>
-        <span class="ep">GET  /api/data-info</span>
-        <span class="ep">POST /api/train</span>
-        <span class="ep">POST /api/predict</span>
-        <span class="ep">GET  /api/metrics</span>
-        <br>
-        <a href="/docs">📄 Swagger UI</a>
-      </div>
-    </body>
-    </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stock Price Prediction API</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      color: #f0f6fc;
+      font-weight: 700;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      background: #1a3a2a;
+      color: #3fb950;
+      border: 1px solid #238636;
+      border-radius: 20px;
+      padding: 0.2rem 0.7rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .status::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: #3fb950;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #8b949e;
+      margin-bottom: 1.75rem;
+    }
+
+    .subtitle span {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 0.1rem 0.45rem;
+      font-size: 0.78rem;
+      color: #79c0ff;
+      margin-right: 0.3rem;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8b949e;
+      margin-bottom: 0.6rem;
+    }
+
+    .endpoints { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.75rem; }
+
+    .ep {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      font-family: 'Consolas', monospace;
+      font-size: 0.85rem;
+      color: #c9d1d9;
+      transition: border-color 0.2s;
+    }
+
+    .ep:hover { border-color: #58a6ff; }
+
+    .badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      border-radius: 4px;
+      padding: 0.15rem 0.45rem;
+      min-width: 42px;
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
+    .get  { background: #1a3a4a; color: #79c0ff; border: 1px solid #1f6feb; }
+    .post { background: #1a3a2a; color: #56d364; border: 1px solid #238636; }
+
+    .divider { border: none; border-top: 1px solid #21262d; margin: 1.5rem 0; }
+
+    .actions { display: flex; gap: 0.75rem; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: #238636; color: #fff; }
+    .btn-secondary { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <span style="font-size:1.6rem">📈</span>
+      <h1>Stock Price Prediction API</h1>
+    </div>
+
+    <div class="status">Live</div>
+
+    <p class="subtitle">
+      <span>FastAPI</span>
+      <span>NumPy ANN</span>
+      <span>Linear Regression</span>
+      <span>Random Forest</span>
+    </p>
+
+    <p class="section-label">Endpoints</p>
+    <div class="endpoints">
+      <div class="ep"><span class="badge get">GET</span>  /api/data-info</div>
+      <div class="ep"><span class="badge post">POST</span> /api/train</div>
+      <div class="ep"><span class="badge post">POST</span> /api/predict</div>
+      <div class="ep"><span class="badge get">GET</span>  /api/metrics</div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="actions">
+      <a href="/docs" class="btn btn-primary">📄 Swagger UI</a>
+      <a href="/redoc" class="btn btn-secondary">📘 ReDoc</a>
+    </div>
+  </div>
+</body>
+</html>
     """
 
 

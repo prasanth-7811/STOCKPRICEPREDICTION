@@ -6,9 +6,9 @@
       "use": "@vercel/python",
       "config": {
         "includeFiles": [
+          "stock-price-ann/api/requirements.txt",
           "stock-price-ann/src/**",
-          "stock-price-ann/data/**",
-          "stock-price-ann/requirements.txt"
+          "stock-price-ann/data/**"
         ]
       }
     }
